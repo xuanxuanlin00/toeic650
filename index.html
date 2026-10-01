@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="多益650">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f3f5f8">
+<title>多益 650 刷題本</title>
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 答案卡概念 — 頂部分頁導覽，內容單欄；閱讀題在寬螢幕改為「文章｜題目」雙欄 */
+:root{
+  --paper:#f3f5f8; --card:#ffffff; --ink:#15213a; --muted:#5a6479; --line:#dce1ea; --soft:#e9edf4;
+  --accent:#2447c9; --accent-soft:#e3e9fb; --lead:#2b3140;
+  --ok:#1b7f55; --ok-soft:#dff3ea; --bad:#c23b33; --bad-soft:#fbe5e3; --warn:#a86a12; --warn-soft:#fbf0dc;
+  --f-body:"IBM Plex Sans","Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-disp:"Noto Sans TC","IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0e131b; --card:#161d28; --ink:#e5eaf2; --muted:#9aa4b6; --line:#2a3342; --soft:#1d2533;
+  --accent:#86a2ff; --accent-soft:#1f2a47; --lead:#d7dce6;
+  --ok:#4cc38f; --ok-soft:#143126; --bad:#f07b72; --bad-soft:#3a1c1b; --warn:#e0a54a; --warn-soft:#352812; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0e131b; --card:#161d28; --ink:#e5eaf2; --muted:#9aa4b6; --line:#2a3342; --soft:#1d2533;
+  --accent:#86a2ff; --accent-soft:#1f2a47; --lead:#d7dce6;
+  --ok:#4cc38f; --ok-soft:#143126; --bad:#f07b72; --bad-soft:#3a1c1b; --warn:#e0a54a; --warn-soft:#352812; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:0 48px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--paper);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--f-disp);font-weight:900;font-size:18px;letter-spacing:.02em}
+.brand b{font-family:var(--f-mono);color:var(--accent);font-size:20px}
+.nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav button{border:0;background:none;padding:6px 12px;border-radius:999px;font-weight:600;color:var(--muted)}
+.nav button[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.nav button:disabled{opacity:.35;cursor:not-allowed}
+.sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.sync.cloud i{background:var(--ok)}
+.sync.local i{background:var(--ok)}
+.sync.none i{background:var(--bad)} .sync.none{color:var(--bad);font-weight:600}
+.spk{border:1px solid var(--line);background:var(--card);color:var(--accent);width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0;flex:none;cursor:pointer;vertical-align:middle}
+.spk:hover{border-color:var(--accent);background:var(--accent-soft)}
+.spk.sm{width:24px;height:24px;font-size:10px}
+.spk.lg{width:44px;height:44px;font-size:16px}
+.wcell{display:flex;align-items:center;gap:8px}
+tr.playing td{background:var(--accent-soft)}
+@media (max-width:640px){
+  #vtbl thead{display:none}
+  #vtbl, #vtbl tbody, #vtbl tr, #vtbl td{display:block;width:auto}
+  #vtbl tr{border-bottom:1px solid var(--line);padding:10px 2px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center}
+  #vtbl td{border:0;padding:0}
+  #vtbl td:nth-child(1){grid-column:1/3}
+  #vtbl td:nth-child(5){grid-column:3;grid-row:1}
+  #vtbl td:nth-child(2){grid-column:1;padding-left:38px}
+  #vtbl td:nth-child(3){grid-column:2/4;font-weight:600}
+  #vtbl td:nth-child(4){grid-column:1/4;padding-left:38px;font-size:14px}
+  .spk{width:36px;height:36px}.spk.sm{width:30px;height:30px}
+}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:14px}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0}
+h1{font-size:26px;font-weight:900}
+h2{font-size:18px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:820px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2{grid-template-columns:1fr}}
+.kpi .v{font-family:var(--f-mono);font-size:28px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:14px;color:var(--muted);font-weight:500}
+.kpi .l{font-size:13px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.ac{background:var(--accent-soft);color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--card);padding:9px 16px;border-radius:8px;font-weight:600}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0e131b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#0e131b}}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bars{display:flex;flex-direction:column;gap:14px}
+.bar-row{display:grid;grid-template-columns:92px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.track{position:relative;height:12px;background:var(--soft);border-radius:6px}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:6px;background:var(--accent)}
+.fill.ok{background:var(--ok)}.fill.warn{background:var(--warn)}.fill.bad{background:var(--bad)}
+.target{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.55}
+.act{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:end;height:110px;padding-top:6px}
+.act div{background:var(--accent);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.act div.z{background:var(--line);opacity:1}
+.act-l{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;font-size:11px;color:var(--muted);text-align:center;font-family:var(--f-mono)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:8px;font-weight:500}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.field{display:flex;flex-direction:column;gap:8px}
+.field>label,.field>.lab{font-size:13px;font-weight:700;color:var(--muted)}
+.partcard{display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:var(--r);padding:14px}
+.partcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.partcard .en{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+/* 題目畫面 */
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-block:14px}
+.prog{flex:1 1 160px;height:6px;background:var(--soft);border-radius:3px;position:relative;min-width:120px}
+.prog i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.qlayout{display:grid;gap:16px}
+.qlayout.two{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}
+@media (max-width:900px){.qlayout.two{grid-template-columns:1fr}}
+.passage{white-space:pre-wrap;font-size:14.5px;line-height:1.75;max-height:70vh;overflow:auto;min-width:0}
+.qlayout.two .passage-card{position:sticky;top:120px}
+@media (max-width:900px){.qlayout.two .passage-card{position:static}.passage{max-height:46vh}}
+.blank{display:inline-block;min-width:3.2em;text-align:center;border-bottom:2px solid var(--muted);font-family:var(--f-mono);font-weight:600;font-size:13px;color:var(--muted);padding:0 4px}
+.blank.cur{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.stem{font-size:18px;line-height:1.65;font-weight:500}
+.stem .gap{display:inline-block;min-width:4em;border-bottom:2px solid var(--ink);margin:0 2px}
+.word{font-family:var(--f-mono);font-size:34px;font-weight:600;letter-spacing:.01em}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:11px 14px;font-size:15.5px;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt:disabled{cursor:default}
+.bub{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--muted);display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--muted);margin-top:-1px}
+.opt.sel .bub{background:var(--lead);border-color:var(--lead);color:var(--card)}
+.opt.sel{border-color:var(--lead)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .bub{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .bub{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt span.t{min-width:0;overflow-wrap:anywhere}
+.fb{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.verdict{font-family:var(--f-disp);font-weight:900;font-size:18px}
+.verdict.ok{color:var(--ok)}.verdict.bad{color:var(--bad)}
+.exp{background:var(--soft);border-radius:8px;padding:12px 14px;font-size:14.5px}
+.exp b{font-weight:700}
+.zh{white-space:pre-wrap;font-size:14px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+.qfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px}
+.star{border:0;background:none;font-size:20px;line-height:1;color:var(--muted);padding:4px}
+.star[aria-pressed="true"]{color:var(--warn)}
+kbd{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--muted)}
+/* 模擬考 */
+.timer{font-family:var(--f-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;padding:4px 12px;border-radius:8px;background:var(--soft)}
+.timer.low{background:var(--bad-soft);color:var(--bad)}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:6px}
+.sheet button{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:4px 0;font-family:var(--f-mono);font-size:12px}
+.sheet button.done{background:var(--lead);border-color:var(--lead);color:var(--card)}
+.sheet button.cur{outline:2px solid var(--accent);outline-offset:1px}
+.sheet button.r{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.sheet button.w{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.confirm{border:1px solid var(--warn);background:var(--warn-soft);border-radius:8px;padding:12px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* 結果與錯題 */
+.score-big{font-family:var(--f-mono);font-size:48px;font-weight:600;line-height:1}
+.list{display:flex;flex-direction:column}
+.list details{border-top:1px solid var(--line)}
+.list details:last-child{border-bottom:1px solid var(--line)}
+.list summary{list-style:none;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 4px;cursor:pointer}
+.list summary::-webkit-details-marker{display:none}
+.list summary .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.list .body{padding:4px 4px 16px;display:flex;flex-direction:column;gap:10px}
+.mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.mark.r{background:var(--ok)}.mark.w{background:var(--bad)}.mark.n{background:var(--muted)}
+.empty{text-align:center;padding:36px 16px;color:var(--muted)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:700}
+input[type=search]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;width:100%;max-width:320px}
+.tips li{margin-bottom:6px}
+.tips{padding-left:18px;margin:0}
+@media (prefers-reduced-motion: no-preference){.fill,.prog i{transition:width .4s ease}.opt{transition:border-color .15s,background .15s}}
+</style>
+
+<header class="top"><div class="top-in">
+  <div class="brand">多益 <b>650</b> 刷題本</div>
+  <span class="sync" id="sync"><i></i><span>讀取進度中…</span></span>
+  <nav class="nav" id="nav">
+    <button data-tab="home">總覽</button>
+    <button data-tab="practice">練習</button>
+    <button data-tab="exam">模擬考</button>
+    <button data-tab="wrong">錯題本</button>
+    <button data-tab="vocab">單字</button>
+  </nav>
+</div></header>
+<main class="wrap" id="view"></main>
+
+<script>
+// 題目格式：選項陣列第一個為正解，畫面上會隨機打亂順序
+const P5 = [
+["The marketing team will ____ the results of the survey at next Monday's meeting.",["present","presents","presented","presenting"],"時態","行銷團隊將在下週一的會議上報告問卷結果。","助動詞 will 後面接原形動詞，所以選 present。"],
+["Ms. Chen has worked for the company ____ fifteen years.",["for","since","during","while"],"介系詞","陳小姐已在公司工作十五年。","for + 一段時間（fifteen years）；since 後面要接時間起點（since 2010），while 是連接詞。"],
+["All employees are required to submit their expense reports ____ Friday.",["by","until","among","along"],"介系詞","所有員工須在週五前繳交費用報告。","by 表示「在…之前（截止）」，適合一次性的動作；until 表示動作持續到某時間點，不適合 submit。"],
+["The new software is ____ easier to use than the previous version.",["much","very","more","most"],"比較級","新軟體比舊版好用得多。","修飾比較級（easier）要用 much / far / even，不能用 very。"],
+["Please contact the front desk if you need ____ assistance.",["additional","addition","additionally","add"],"詞性","如需額外協助，請聯絡櫃台。","空格在名詞 assistance 前，需要形容詞 additional（額外的）。"],
+["The conference room is not available ____ it is being renovated.",["because","because of","despite","although"],"連接詞","會議室因正在整修而無法使用。","空格後是完整子句（it is being renovated），需要連接詞 because；because of 後面接名詞。語意是因果，不是讓步，所以不選 although。"],
+["____ the heavy rain, the outdoor concert was held as scheduled.",["Despite","Although","Because","Even"],"連接詞","儘管下大雨，戶外音樂會仍如期舉行。","空格後是名詞片語（the heavy rain），要用介系詞 Despite；Although 後面要接子句。"],
+["Mr. Park asked his assistant to ____ the documents to the client.",["send","sent","sending","sends"],"動詞形式","朴先生請助理把文件寄給客戶。","ask + 人 + to + 原形動詞，所以選 send。"],
+["The report ____ by the finance department last week.",["was prepared","prepared","has prepared","is preparing"],"語態","這份報告是上週由財務部準備的。","報告是「被準備」，且有 by 和 last week，要用過去式被動 was prepared。"],
+["Our store offers a wide ____ of kitchen appliances.",["selection","select","selective","selected"],"詞性","本店提供種類齊全的廚房家電。","a wide ____ of 中間需要名詞，a wide selection of = 多樣的選擇。"],
+["Applicants should have at least three years of ____ in customer service.",["experience","experienced","experiencing","experiences"],"詞性","應徵者應具備至少三年客服經驗。","「工作經驗」的 experience 是不可數名詞；複數 experiences 指「經歷、體驗」。"],
+["The manager was impressed by how ____ the new intern completed the project.",["quickly","quick","quickness","quicker"],"詞性","經理對新實習生完成專案的速度印象深刻。","修飾動詞 completed 要用副詞 quickly。"],
+["If the shipment ____ late, we will notify you immediately.",["arrives","arrive","will arrive","arrived"],"時態","如果貨物延遲到達，我們會立即通知您。","條件句 if 子句用現在式代替未來式；主詞 shipment 為單數，所以用 arrives。"],
+["Neither the director ____ the assistant was available for comment.",["nor","or","and","but"],"連接詞","主任和助理都無法回應。","固定搭配 neither A nor B（A 和 B 都不）。"],
+["The hotel provides free shuttle service ____ guests staying more than two nights.",["to","at","with","of"],"介系詞","飯店為住宿超過兩晚的旅客提供免費接駁車。","provide 物 to 人 ＝ provide 人 with 物。這裡是先接物（service），所以用 to。"],
+["Ms. Lopez is the person ____ organized the annual charity event.",["who","which","whom","whose"],"關係代名詞","羅培茲小姐就是籌辦年度慈善活動的人。","先行詞是人（the person），且關代在子句中當主詞，所以用 who。"],
+["The company ____ its headquarters to Taipei next year.",["will relocate","relocated","has relocated","relocating"],"時態","公司明年將把總部遷到台北。","next year 表示未來，用 will relocate。"],
+["Customers ____ purchase more than $100 will receive a free gift.",["who","whose","which","what"],"關係代名詞","消費超過 100 美元的顧客將獲得贈品。","先行詞 customers 是人，關代當主詞，用 who。"],
+["The printer on the third floor is out of order, so please use ____ on the second floor.",["the one","it","that","this"],"代名詞","三樓的印表機故障了，請使用二樓那台。","指同類但不同的一個（另一台印表機）用 the one；it 會指同一台。"],
+["The training session has been ____ until further notice.",["postponed","postpone","postponing","postpones"],"語態","培訓課程已延期，另行通知。","has been + 過去分詞構成現在完成被動式。"],
+["Please read the instructions ____ before assembling the furniture.",["carefully","care","careful","carefulness"],"詞性","組裝家具前請仔細閱讀說明。","修飾動詞 read 用副詞 carefully。"],
+["Sales have increased ____ since the new advertising campaign began.",["significantly","significant","significance","signify"],"詞性","自新廣告活動開始以來，銷售額大幅增加。","修飾動詞 increased 用副詞 significantly（顯著地）。"],
+["The seminar is open to all staff members, ____ of their department.",["regardless","despite","instead","because"],"片語","研討會開放給所有員工，不論部門。","regardless of ＝ 不論、不管，是多益常考片語。"],
+["Mr. Tanaka will be ____ charge of the project while Ms. Kim is on vacation.",["in","at","on","for"],"片語","金小姐休假期間，田中先生將負責這個專案。","in charge of ＝ 負責。"],
+["The contract must be signed by both parties ____ it becomes valid.",["before","during","since","unless"],"連接詞","合約必須由雙方簽署後才生效。","語意是「在生效之前必須簽署」，用 before；during 是介系詞不能接子句。"],
+["We apologize for any ____ caused by the delay.",["inconvenience","convenient","inconvenient","conveniently"],"詞性","對延誤造成的任何不便，我們深表歉意。","any 後面接名詞，且語意是「不便」，所以選 inconvenience。這句是多益道歉信的固定句型。"],
+["The quarterly budget was approved ____ the board of directors.",["by","from","with","for"],"介系詞","季度預算已由董事會核准。","被動語態中表示動作執行者用 by。"],
+["Employees who wish to take leave must ____ their supervisor at least one week in advance.",["notify","announce","inform to","say"],"字彙","欲請假的員工須至少提前一週通知主管。","notify + 人 ＝ 通知某人。announce 和 say 不能直接接人當受詞；inform 直接接人，不加 to。"],
+["The survey results were ____ than expected.",["better","good","best","well"],"比較級","問卷結果比預期好。","有 than 要用比較級 better。"],
+["The shipment was delayed ____ a problem at the port.",["due to","because","so that","in order to"],"介系詞","貨物因港口問題而延誤。","空格後是名詞片語（a problem），要用 due to（由於）；because 後面要接子句。"],
+["____ you have any questions, please do not hesitate to contact us.",["Should","Would","Could","Might"],"倒裝","如有任何問題，請隨時與我們聯絡。","Should you have… 是 If you should have… 的倒裝，是商業書信常見句型。"],
+["The restaurant is known for its ____ service and reasonable prices.",["exceptional","except","exception","exceptionally"],"詞性","這家餐廳以卓越的服務和合理的價格聞名。","修飾名詞 service 用形容詞 exceptional（卓越的）。"],
+["The new branch office is expected to open ____ the end of the year.",["by","until","since","among"],"介系詞","新分公司預計在年底前開幕。","by the end of ＝ 在…結束之前。open 是一次性的動作，不用 until。"],
+["Ms. Wang ____ for the company for ten years before she retired.",["had worked","works","has worked","will work"],"時態","王小姐退休前已在公司工作十年。","退休（過去）之前就已經發生的事，用過去完成式 had worked。"],
+["The IT department recommends that all passwords ____ every three months.",["be changed","change","changing","are changed"],"語態","資訊部建議所有密碼每三個月更換一次。","recommend that 後面的子句用原形動詞（省略 should）；密碼是「被更換」，所以用 be changed。"],
+["The CEO thanked the staff for ____ hard work this year.",["their","they","them","theirs"],"代名詞","執行長感謝員工今年的辛勤工作。","名詞 hard work 前要用所有格 their。"],
+["Only employees with a valid ID card are ____ to enter the laboratory.",["permitted","permission","permit","permitting"],"語態","只有持有效識別證的員工才能進入實驗室。","be permitted to V ＝ 被允許做某事。"],
+["The price of the tickets ____ lunch and a guided tour.",["includes","include","including","inclusion"],"主詞動詞一致","票價包含午餐和導覽。","真正的主詞是 The price（單數），不是 tickets，所以動詞用 includes。"],
+["The factory has ____ its production capacity by 20 percent.",["increased","risen","raised up","arisen"],"字彙","工廠已將產能提高 20%。","has 後接過去分詞且需要及物動詞。rise 和 arise 是不及物動詞，不能接受詞；raise up 用法不自然。"],
+["The package should arrive within five ____ days.",["business","busy","businesslike","busily"],"字彙","包裹應在五個工作天內送達。","business days ＝ 工作天（不含週末假日），多益高頻詞。"],
+["Mr. Lee decided to ____ the job offer because the salary was too low.",["decline","refuse to","deny","reject from"],"字彙","李先生因薪水太低而決定婉拒這份工作。","decline an offer ＝ 婉拒提議。deny 是「否認」；refuse to 後面要接動詞。"],
+["The seminar was so ____ that many attendees asked for a second session.",["informative","inform","information","informed"],"詞性","研討會內容豐富，許多與會者要求再辦一場。","so + 形容詞 + that；informative ＝ 提供有用資訊的。informed 是「消息靈通的」，用來形容人。"],
+["Ms. Suzuki has been promoted to ____ manager of the Osaka branch.",["regional","region","regionally","regions"],"詞性","鈴木小姐已升任大阪分公司的區域經理。","修飾名詞 manager 用形容詞 regional。"],
+["Please keep your receipt ____ you need to return the item.",["in case","so that","even if","as though"],"連接詞","請保留收據，以防需要退貨。","in case ＝ 以防萬一，語意最通順。"],
+["The board meeting has been moved ____ Tuesday to Thursday.",["from","at","on","since"],"介系詞","董事會已從週二改到週四。","from A to B ＝ 從 A 到 B。"],
+["Our customer service representatives are available 24 hours a day, seven days a week, ____ holidays.",["including","include","included","inclusive"],"詞性","我們的客服人員全年無休，包括假日。","including 當介系詞用，後面接名詞，意思是「包括」。"],
+["The company is looking for a candidate who is ____ in both English and Japanese.",["fluent","fluently","fluency","fluentness"],"詞性","公司正在尋找英日語都流利的人選。","be 動詞後接形容詞 fluent；be fluent in ＝ 精通某語言。"],
+["The warehouse staff worked overtime ____ the orders could be shipped on time.",["so that","such that","in order to","because of"],"連接詞","倉庫人員加班，好讓訂單能準時出貨。","so that + 子句 ＝ 以便。in order to 後面要接原形動詞，不能接子句。"],
+["Each department ____ responsible for managing its own budget.",["is","are","be","being"],"主詞動詞一致","每個部門都要負責管理自己的預算。","Each + 單數名詞，動詞用單數 is。"],
+["Before ____ the meeting, Mr. Chen reviewed the agenda.",["attending","attend","attended","attends"],"動詞形式","出席會議前，陳先生先看過了議程。","介系詞 before 後面接動名詞 attending。"],
+["The results of the study will be ____ in next month's issue of the journal.",["published","publishing","publisher","publication"],"語態","研究結果將刊登在下個月的期刊上。","will be + 過去分詞構成未來被動式。"],
+["The new policy will take ____ on January 1.",["effect","affect","effective","effectively"],"片語","新政策將於 1 月 1 日生效。","take effect ＝ 生效。affect 是動詞「影響」。"],
+["Mr. Garcia is ____ to lead the team because of his extensive experience.",["qualified","qualify","qualification","qualifying"],"詞性","賈西亞先生經驗豐富，有資格帶領團隊。","be qualified to V ＝ 有資格做某事。"],
+["Despite the price increase, demand for the product remained ____.",["steady","steadily","steadiness","steadied"],"詞性","儘管漲價，該產品的需求仍保持穩定。","remain 是連綴動詞，後面接形容詞 steady。"],
+["Participants are asked to arrive 15 minutes early ____ registration.",["for","to","at","by"],"介系詞","參加者請提早 15 分鐘到場辦理報到。","for 表示目的：為了報到。"],
+["____ of the applicants has submitted the required documents yet.",["None","All","Every","Much"],"代名詞","目前還沒有任何應徵者繳交必要文件。","句尾 yet 用在否定句，需要否定詞 None。All of 後面動詞要用複數 have；Every 不能接 of；Much 修飾不可數名詞。"],
+["The manager requested that the report be ____ by noon.",["completed","complete","completing","completion"],"語態","經理要求報告在中午前完成。","request that 子句用原形 be，報告是「被完成」，用 be completed。"],
+["Visitors must ____ at the reception desk upon arrival.",["register","registration","registered","registers"],"動詞形式","訪客抵達時須在接待處登記。","助動詞 must 後接原形動詞 register。"],
+["The shop will be closed for renovation ____ March 3 to March 10.",["from","between","during","through"],"介系詞","店面將於 3 月 3 日至 10 日整修暫停營業。","有 to 搭配，用 from A to B；between 要搭配 and。"],
+["The new employee handbook is ____ on the company intranet.",["available","availability","avail","availably"],"詞性","新員工手冊可在公司內網取得。","be 動詞後接形容詞 available（可取得的）。"]
+];
+
+// 段落題：{id, title, text（____ 以 [1] [2] 標記）, zh, qs:[[題目, 選項, 詳解]]}
+const P6 = [
+{id:"p6a",title:"E-mail：停車場整修",text:"To: All Staff\nFrom: Facilities Department\nSubject: Parking Lot Repairs\n\nPlease be advised that the east parking lot will be closed from May 12 to May 16 for resurfacing. During this period, employees __[1]__ in the west lot or the nearby public garage on Lin Street. __[2]__ Parking fees at the garage will be __[3]__ by the company; simply show your employee ID to the attendant. We understand this may cause some inconvenience, and we appreciate your __[4]__.",
+zh:"收件人：全體員工／寄件人：總務部／主旨：停車場整修\n\n東側停車場將於 5 月 12 日至 16 日封閉重鋪路面。這段期間，員工應停在西側停車場或林街附近的公有停車場。（西側停車位有限，請提早到。）公有停車場的費用將由公司負擔，只要向管理員出示員工證即可。我們了解這可能造成不便，感謝您的耐心配合。",
+qs:[
+["[1]",["should park","park","parked","parking"],"主詞 employees 後需要動詞，而且是「應該停在…」的指示，should park 最合適。park 雖是動詞，但少了建議語氣，且 parked/parking 不能單獨當述語。"],
+["[2]",["Spaces in the west lot are limited, so please arrive early.","The repairs were completed last month.","The cafeteria menu will change next week.","Our new CEO will visit the office soon."],"前一句提到改停西側停車場，接著提醒「西側車位有限請早到」最連貫。整修是 5 月才開始，不可能「上個月已完成」。"],
+["[3]",["covered","charged","spent","paid off"],"cover the fee ＝ 支付／負擔費用。後面說出示員工證即可，表示公司買單。"],
+["[4]",["patience","patient","patiently","patients"],"所有格 your 後面接名詞；appreciate your patience ＝ 感謝您的耐心，是固定用語。patients 是「病人」。"]
+]},
+{id:"p6b",title:"廣告：文具店十週年",text:"Greenleaf Office Supplies is celebrating its 10th anniversary! From now until June 30, all customers will receive 20 percent off __[1]__ purchases over $50. In addition, members of our rewards program will earn double points __[2]__ the promotion. __[3]__ Visit any of our five locations or shop online at our Web site. Don't miss this __[4]__ to stock up on essentials!",
+zh:"綠葉辦公用品歡慶十週年！即日起至 6 月 30 日，所有消費滿 50 美元的顧客享八折優惠。此外，集點會員在活動期間可獲得雙倍點數。（加入會員免費，只需幾分鐘。）歡迎到我們五家門市或網站選購。別錯過這個囤貨的好機會！",
+qs:[
+["[1]",["all","every","each","much"],"purchases 是複數名詞，要用 all。every 和 each 接單數名詞，much 接不可數名詞。"],
+["[2]",["during","while","when","as"],"空格後是名詞 the promotion，要用介系詞 during（在…期間）；while/when/as 是連接詞，後面要接子句。"],
+["[3]",["Signing up for the program is free and takes only a few minutes.","Our store was founded by two brothers.","Unfortunately, the sale has been canceled.","Please return all borrowed items."],"前一句在講集點會員的好處，接著說「加入免費」最自然。說活動取消會和上下文矛盾。"],
+["[4]",["opportunity","opportune","opportunities","opportunely"],"this 後面接單數名詞 opportunity；this opportunity to V ＝ 做某事的好機會。"]
+]},
+{id:"p6c",title:"備忘錄：新打卡系統",text:"MEMO\nTo: All Department Heads\nRe: New Time-Tracking System\n\nStarting next month, the company will switch to a new online time-tracking system. The system will __[1]__ employees to record their working hours from any device. Training sessions will be held next week in Conference Room B. Each session lasts approximately one hour. __[2]__ Please make sure that all members of your team attend one of the sessions. If you have questions, contact Ben Ortiz in the IT department. He is __[3]__ the rollout. We believe the new system will make payroll processing much more __[4]__.",
+zh:"備忘錄／致：各部門主管／主旨：新打卡系統\n\n下個月起，公司將改用新的線上工時系統，員工可用任何裝置登錄工時。培訓課程將於下週在 B 會議室舉行，每場約一小時。（可參加的場次時間表已附在本備忘錄中。）請確保團隊所有成員都參加其中一場。如有問題，請聯絡資訊部的 Ben Ortiz，他負責這次系統上線。我們相信新系統會讓薪資作業更有效率。",
+qs:[
+["[1]",["allow","let","make","have"],"allow + 人 + to V ＝ 允許某人做某事。let、make、have 當使役動詞時後面接原形動詞，不加 to。"],
+["[2]",["A schedule of available times is attached to this memo.","The old system was installed in 2010 and works perfectly.","Lunch will not be provided at the company picnic.","Conference Room B is located in another city."],"前面提到培訓課程，後面要主管確保員工參加「其中一場」，中間補上「場次表已附上」最合理。"],
+["[3]",["overseeing","oversee","overseen","oversees"],"He is ____ 構成現在進行式，要用 V-ing：overseeing（負責監督）。"],
+["[4]",["efficient","efficiency","efficiently","efficiencies"],"make + 受詞 + 形容詞；much more efficient ＝ 更有效率。"]
+]},
+{id:"p6d",title:"客服信：商品缺貨",text:"Dear Mr. Hoffman,\n\nThank you for your recent order from Brightway Electronics. Unfortunately, the model you ordered, the X200 headphones, is currently out of stock. We expect to receive a new shipment __[1]__ two weeks. __[2]__, you may choose a similar model, the X250, at the same price. __[3]__ Please let us know which option you prefer by replying to this e-mail. We apologize for the delay and thank you for your __[4]__.\n\nSincerely,\nCustomer Service Team",
+zh:"親愛的 Hoffman 先生：\n\n感謝您近期向 Brightway 電子訂購。很抱歉，您訂購的 X200 耳機目前缺貨，我們預計兩週內會進貨。或者，您也可以用相同價格改選類似型號 X250。（它的電池續航力比 X200 稍長。）請回覆此信告知您偏好的選項。造成延誤敬請見諒，感謝您的體諒。\n\n客服團隊 敬上",
+qs:[
+["[1]",["within","since","by","until"],"within + 一段時間（two weeks）＝ 在兩週之內。by 後面接時間點（by May 3），不接一段時間。"],
+["[2]",["Alternatively","Therefore","Similarly","Consequently"],"前一句是「等兩週進貨」，這句提供另一個選擇（改選 X250），用 Alternatively（或者）。Therefore/Consequently 表因果，不合語意。"],
+["[3]",["It offers slightly longer battery life than the X200.","We have closed all of our stores.","Your order was delivered yesterday.","The X200 has been discontinued permanently."],"前句介紹 X250，接著補充它的優點最連貫。說 X200 永久停產會與「兩週內進貨」矛盾。"],
+["[4]",["understanding","understand","understood","understandable"],"your 後接名詞；thank you for your understanding ＝ 感謝您的體諒，是道歉信固定用語。"]
+]}
+];
+
+const P7 = [
+{id:"p7a",title:"公告：圖書館開放時間",text:"RIVERSIDE PUBLIC LIBRARY — NOTICE\n\nBeginning July 1, the library's opening hours will change. On weekdays, the library will open at 9:00 A.M. instead of 10:00 A.M. and will close at 8:00 P.M. Weekend hours (10:00 A.M. – 5:00 P.M.) will remain the same.\n\nIn addition, the second-floor study rooms can now be reserved online up to seven days in advance. Each reservation is limited to two hours. For more information, please speak to a staff member at the information desk.",
+zh:"河濱公共圖書館公告\n\n自 7 月 1 日起，本館開放時間調整：平日改為上午 9 點（原為 10 點）開館，晚上 8 點閉館。週末時段（上午 10 點至下午 5 點）維持不變。\n\n此外，二樓自習室現在可提前七天上網預約，每次預約上限兩小時。詳情請洽服務台人員。",
+qs:[
+["What is the purpose of the notice?",["To announce new opening hours","To advertise a book sale","To recruit volunteers","To announce a temporary closure"],"主旨題看第一句：opening hours will change，目的是公告新的開放時間。"],
+["What will change on weekdays?",["The library will open earlier.","The library will close earlier.","The study rooms will be closed.","The weekend hours will be extended."],"平日從 10 點改成 9 點開，也就是提早開館。open earlier 是 9:00 instead of 10:00 的改寫（paraphrase）。"],
+["What is indicated about the study rooms?",["They can be reserved up to a week ahead.","They are located on the first floor.","They can be used for up to four hours.","They are available only on weekends."],"原文 seven days in advance ＝ a week ahead。自習室在二樓、每次上限兩小時，其他選項都錯。"]
+]},
+{id:"p7b",title:"E-mail：網站改版",text:"From: Karen Liu <kliu@novatech.example>\nTo: David Moore <dmoore@harbordesign.example>\nDate: March 3\nSubject: Web site redesign\n\nDear Mr. Moore,\n\nThank you for sending the proposal for our Web site redesign. My team reviewed it yesterday, and we are very pleased with the overall design. However, we would like to make a few changes before we approve it. First, we would prefer a lighter color for the background of the home page. Second, we would like the \"Contact Us\" button to appear at the top of every page rather than only at the bottom.\n\nAlso, the proposal states that the project will be completed by May 15. Would it be possible to finish by April 30? We are launching a new product line in early May and would like the new Web site to be ready by then. We are willing to pay an additional fee if necessary.\n\nPlease let me know at your earliest convenience.\n\nBest regards,\nKaren Liu\nMarketing Director, NovaTech",
+zh:"Moore 先生您好：\n\n感謝您寄來網站改版提案。我的團隊昨天看過，整體設計我們很滿意，但在核准前想做幾項修改：第一，首頁背景希望用淺一點的顏色；第二，希望「聯絡我們」按鈕出現在每一頁的最上方，而不是只在最下方。\n\n另外，提案寫專案將於 5 月 15 日前完成，能否在 4 月 30 日前完成？我們五月初要推出新產品線，希望新網站能在那之前上線。如有需要，我們願意支付額外費用。\n\n請盡快回覆。\n\nNovaTech 行銷總監 Karen Liu",
+qs:[
+["Why did Ms. Liu write the e-mail?",["To request changes to a proposal","To reject a proposal","To apply for a job","To complain about a product"],"信中說 we would like to make a few changes before we approve it，目的是要求修改提案。她對設計很滿意，並沒有拒絕。"],
+["What does Ms. Liu want to be moved?",["A button","A logo","A photo","A product list"],"她希望 Contact Us button 從頁面底部移到每頁頂端。"],
+["Why does Ms. Liu ask for an earlier deadline?",["Her company is launching new products.","Her team is going on vacation.","Her budget ends in April.","Mr. Moore is leaving his firm."],"原因在 We are launching a new product line in early May。"],
+["What is Ms. Liu willing to do?",["Pay an extra fee","Meet in person","Change the product launch date","Hire another designer"],"We are willing to pay an additional fee ＝ 願意付額外費用。"]
+]},
+{id:"p7c",title:"簡訊對話：展場佈置",text:"Tom Reyes (9:12 A.M.)\nHi Amy, are you already at the convention center?\n\nAmy Sato (9:14 A.M.)\nYes, I'm setting up our booth now. Where are you?\n\nTom Reyes (9:15 A.M.)\nStuck in traffic on Highway 5. There was an accident. I'll probably be 30 minutes late.\n\nAmy Sato (9:16 A.M.)\nNo problem. The doors don't open until 10:00.\n\nTom Reyes (9:17 A.M.)\nGreat. Did the brochures arrive?\n\nAmy Sato (9:19 A.M.)\nOnly two boxes. The third one is missing. I'll call the printing company.\n\nTom Reyes (9:20 A.M.)\nThanks. I have some extra copies in my car, so we should be fine for the morning.",
+zh:"Tom（9:12）：嗨 Amy，妳已經到會展中心了嗎？\nAmy（9:14）：到了，我正在佈置攤位。你在哪？\nTom（9:15）：卡在 5 號公路，前面有車禍，大概會晚 30 分鐘。\nAmy（9:16）：沒問題，10 點才開門。\nTom（9:17）：太好了。簡介送到了嗎？\nAmy（9:19）：只到兩箱，第三箱不見了，我來打給印刷廠。\nTom（9:20）：謝謝。我車上有多的，早上應該夠用。",
+qs:[
+["Where most likely is Ms. Sato?",["At a convention center","At a printing company","On a highway","At an airport"],"Tom 問 are you already at the convention center? Amy 回答 Yes，還說正在佈置攤位。"],
+["At 9:16 A.M., what does Ms. Sato mean when she writes, \"No problem\"?",["Mr. Reyes will still arrive before the event opens.","She has solved the brochure problem.","She does not need help with the booth.","The accident has been cleared."],"意圖題要看前後文：Tom 說會晚 30 分鐘（約 9:45 到），Amy 接著說 10 點才開門，意思是他仍能在開門前趕到。"],
+["What will Ms. Sato probably do next?",["Contact a printing company","Drive to the highway","Open the doors","Print more brochures"],"她說 I'll call the printing company，接下來會聯絡印刷廠。"]
+]},
+{id:"p7d",title:"徵才廣告：行政助理",text:"POSITION: Administrative Assistant\nFulton & Grey Law Offices\n\nFulton & Grey, a mid-sized law firm in downtown Kaohsiung, is seeking a full-time administrative assistant. Responsibilities include answering phone calls, scheduling client appointments, and organizing files.\n\nRequirements:\n• A minimum of two years of office experience\n• Strong computer skills, especially with spreadsheet software\n• Excellent communication skills in English and Mandarin\n\nPrevious experience at a law firm is preferred but not required. We offer a competitive salary, health insurance, and 15 days of paid vacation per year.\n\nTo apply, send your résumé and a cover letter to the Human Resources Department by April 20. Only candidates selected for an interview will be contacted.",
+zh:"職缺：行政助理／Fulton & Grey 律師事務所\n\n位於高雄市中心的中型律師事務所 Fulton & Grey 誠徵全職行政助理。工作內容包括接聽電話、安排客戶預約、整理檔案。\n\n條件：至少兩年辦公室經驗；電腦能力佳，尤其是試算表軟體；英語及中文溝通能力優秀。\n\n有律師事務所經驗者佳，但非必要。我們提供具競爭力的薪資、健康保險及每年 15 天有薪假。\n\n請於 4 月 20 日前將履歷及求職信寄至人資部。僅通知獲選面試者。",
+qs:[
+["What is NOT mentioned as a job responsibility?",["Preparing legal contracts","Answering phone calls","Scheduling appointments","Organizing files"],"NOT 題要逐一比對：接電話、排預約、整理檔案都有列出，只有「準備法律合約」沒提到。"],
+["What is stated as preferred?",["Experience working at a law firm","A university degree in law","Knowledge of Japanese","Ability to work on weekends"],"Previous experience at a law firm is preferred but not required。"],
+["What is indicated about the application process?",["Not all applicants will receive a reply.","Applications must be submitted in person.","Interviews will be held on April 20.","A reference letter is required."],"Only candidates selected for an interview will be contacted ＝ 不是每位應徵者都會收到回覆。4 月 20 日是截止日，不是面試日。"]
+]},
+{id:"p7e",title:"新聞：烘焙坊展店",text:"Local Bakery Expands\n\nTAINAN — Sunrise Bakery, which opened its first shop on Minzu Road eight years ago, will open its third location next month in the new Harbor Mall. Owner Grace Huang said the decision was driven by strong demand for the bakery's pineapple cakes, which have become popular with tourists.\n\n\"Many visitors told us they wished we had a shop closer to the train station,\" Ms. Huang said. The new store will be twice the size of the original shop and will include a café area with seating for 40 customers.\n\nThe bakery plans to hire 15 new employees, and interested applicants can apply at either existing location. A grand opening celebration with free samples is scheduled for June 5.",
+zh:"在地烘焙坊展店\n\n【台南訊】八年前在民族路開設第一家店的晨光烘焙坊，下個月將在新開幕的港灣購物中心開設第三家分店。老闆黃葛瑞絲表示，展店是因為鳳梨酥需求強勁，很受觀光客歡迎。\n\n「很多遊客說希望我們在火車站附近有店。」黃老闆說。新店面積是原始店面的兩倍，並設有可容納 40 人的咖啡座區。\n\n烘焙坊計畫招募 15 名新員工，有興趣者可到現有兩家店應徵。開幕慶祝活動將於 6 月 5 日舉行，現場提供免費試吃。",
+qs:[
+["What is the article mainly about?",["A business opening a new branch","The construction of a train station","A cooking competition","A shopping mall closing"],"標題 Local Bakery Expands 和第一段都在講烘焙坊開第三家店。"],
+["According to the article, why is the bakery expanding?",["Its products are in high demand.","Its original shop is closing.","The rent at its current location increased.","It recently won an award."],"the decision was driven by strong demand for the bakery's pineapple cakes ＝ 產品需求很高。"],
+["What is suggested about the new store?",["It will be larger than the first shop.","It will be located on Minzu Road.","It will sell only pineapple cakes.","It will have seating for 15 people."],"twice the size of the original shop ＝ 比第一家店大。座位是 40 個，15 是招募人數。"],
+["What will happen on June 5?",["Free samples will be offered.","Job interviews will be held.","The first shop will close.","Prices will increase."],"A grand opening celebration with free samples is scheduled for June 5。"]
+]}
+];
+
+// 單字：[英文, 詞性, 中文, 例句, 例句翻譯]
+const VOC = [
+["agenda","n.","議程","Let's move on to the next item on the agenda.","我們進行議程的下一項。"],
+["applicant","n.","申請者；應徵者","Each applicant must submit a résumé.","每位應徵者都須繳交履歷。"],
+["appointment","n.","約會；預約","I have a dental appointment at 3 P.M.","我下午三點約了看牙醫。"],
+["approve","v.","批准；核准","The manager approved the budget.","經理核准了預算。"],
+["attach","v.","附上；貼上","Please see the attached file.","請參閱附件。"],
+["available","adj.","可取得的；有空的","Is Mr. Lin available this afternoon?","林先生今天下午有空嗎？"],
+["budget","n.","預算","The project is over budget.","這個專案超出預算。"],
+["candidate","n.","候選人；應徵者","We interviewed five candidates.","我們面試了五位應徵者。"],
+["colleague","n.","同事","She went to lunch with her colleagues.","她和同事去吃午餐。"],
+["complimentary","adj.","免費贈送的","Breakfast is complimentary for hotel guests.","住客享免費早餐。"],
+["confirm","v.","確認","Please confirm your reservation by e-mail.","請以電子郵件確認您的預訂。"],
+["contract","n.","合約","Both sides signed the contract.","雙方簽了合約。"],
+["deadline","n.","截止期限","The deadline for applications is May 1.","申請截止日是 5 月 1 日。"],
+["delay","n./v.","延誤；延遲","The flight was delayed by two hours.","班機延誤了兩小時。"],
+["deliver","v.","遞送；交付","The package will be delivered tomorrow.","包裹明天會送達。"],
+["department","n.","部門","She works in the accounting department.","她在會計部工作。"],
+["estimate","n./v.","估價；估計","Can you give me an estimate for the repairs?","可以給我修理的估價嗎？"],
+["expand","v.","擴展；擴大","The company plans to expand into Asia.","公司計畫拓展到亞洲。"],
+["expense","n.","費用；支出","Travel expenses will be covered.","差旅費會由公司支付。"],
+["facility","n.","設施；場所","The new facility opens next month.","新設施下個月啟用。"],
+["invoice","n.","發票；請款單","We will send the invoice at the end of the month.","我們會在月底寄出請款單。"],
+["inventory","n.","庫存；存貨清單","We check the inventory every Friday.","我們每週五盤點庫存。"],
+["itinerary","n.","行程表","Your travel itinerary is attached.","附上您的旅遊行程表。"],
+["launch","v./n.","推出；發表","The product will be launched in June.","產品將在六月推出。"],
+["merchandise","n.","商品","All merchandise is 30 percent off.","全部商品七折。"],
+["negotiate","v.","協商；談判","They negotiated a lower price.","他們談到了更低的價格。"],
+["postpone","v.","延期","The meeting was postponed until Friday.","會議延到週五。"],
+["promote","v.","使升遷；促銷","She was promoted to sales manager.","她升任業務經理。"],
+["purchase","v./n.","購買","Keep the receipt as proof of purchase.","請保留收據作為購買證明。"],
+["receipt","n.","收據","May I have a receipt, please?","可以給我收據嗎？"],
+["recruit","v.","招募","The firm is recruiting new engineers.","公司正在招募新工程師。"],
+["refund","n./v.","退款","You can get a full refund within 30 days.","30 天內可全額退款。"],
+["reimburse","v.","核銷；償還（費用）","The company will reimburse your taxi fare.","公司會核銷你的計程車費。"],
+["renovate","v.","翻修；整修","The lobby is being renovated.","大廳正在整修。"],
+["reservation","n.","預訂","I'd like to make a reservation for two.","我想訂兩位。"],
+["revenue","n.","營收；收入","Revenue rose by 10 percent last year.","去年營收成長 10%。"],
+["schedule","n./v.","行程；安排","The interview is scheduled for Monday.","面試安排在週一。"],
+["shipment","n.","運送的貨物；運送","The shipment arrived damaged.","這批貨送到時已損壞。"],
+["subscription","n.","訂閱","Your subscription expires next month.","您的訂閱下個月到期。"],
+["supervisor","n.","主管；上司","Report any problems to your supervisor.","有任何問題請向主管報告。"],
+["survey","n.","問卷調查","Please take a few minutes to complete the survey.","請花幾分鐘填寫問卷。"],
+["warranty","n.","保固","The laptop comes with a two-year warranty.","這台筆電有兩年保固。"],
+["headquarters","n.","總部","Our headquarters is in Taipei.","我們的總部在台北。"],
+["brochure","n.","小冊子；簡介","Take a brochure at the entrance.","請在入口處拿一份簡介。"],
+["quarterly","adj.","每季的","The quarterly report is due next week.","季報下週要交。"],
+["tenant","n.","房客；承租人","All tenants must follow the building rules.","所有房客都須遵守大樓規定。"],
+["venue","n.","會場；場地","The venue can hold 500 people.","會場可容納 500 人。"],
+["attendee","n.","出席者；與會者","Each attendee will receive a name tag.","每位與會者都會拿到名牌。"],
+["revise","v.","修訂；修改","Please revise the report and send it back.","請修改報告後寄回。"],
+["comply","v.","遵守（comply with）","All staff must comply with safety rules.","全體員工都須遵守安全規定。"],
+["eligible","adj.","有資格的","Full-time staff are eligible for the bonus.","全職員工有資格領獎金。"],
+["mandatory","adj.","強制的；必須的","Attendance at the meeting is mandatory.","這場會議必須出席。"],
+["tentative","adj.","暫定的","The tentative date is June 12.","暫定日期是 6 月 12 日。"],
+["prompt","adj.","迅速的；及時的","Thank you for your prompt reply.","感謝您迅速回覆。"],
+["reliable","adj.","可靠的","We need a reliable supplier.","我們需要可靠的供應商。"],
+["outstanding","adj.","傑出的；未付清的","The invoice is still outstanding.","這張帳單還沒付清。"],
+["vendor","n.","供應商；攤販","We compared prices from three vendors.","我們比較了三家供應商的價格。"],
+["commute","v./n.","通勤","My commute takes about 40 minutes.","我通勤大約 40 分鐘。"],
+["personnel","n.","人員；人事","Only authorized personnel may enter.","僅限授權人員進入。"],
+["luggage","n.","行李","Please do not leave your luggage unattended.","請勿將行李置於無人看管處。"]
+];
+
+</script>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LET = 'ABCD';
+const LSKEY = 'toeic650-progress';
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pad = n => String(n).padStart(2, '0');
+const dayKey = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const fmtTime = s => Math.floor(s / 60) + ':' + pad(s % 60);
+const pct = (c, n) => n ? Math.round(c / n * 100) : 0;
+const TARGET = 70;
+const PARTS = {5:{name:'Part 5',zh:'句子填空',en:'Incomplete Sentences'},6:{name:'Part 6',zh:'段落填空',en:'Text Completion'},7:{name:'Part 7',zh:'閱讀理解',en:'Reading Comprehension'},V:{name:'單字',zh:'核心單字',en:'Vocabulary'}};
+
+// ---------- 題庫 ----------
+const Q = [], QM = {}, PASS = {};
+P5.forEach((r, i) => { const q = {id:'p5-' + (i + 1), part:5, stem:r[0], opts:r[1], tag:r[2], zh:r[3], exp:r[4]}; Q.push(q); QM[q.id] = q; });
+[...P6.map(p => [6, p]), ...P7.map(p => [7, p])].forEach(([part, p]) => {
+  PASS[p.id] = p; p.part = part; p.qids = [];
+  p.qs.forEach((r, j) => {
+    const insert = part === 6 && r[1][0].split(' ').length > 4;
+    const q = {id:p.id + '-' + (j + 1), part, pid:p.id, num:j + 1, stem:r[0], opts:r[1], exp:r[2], tag: part === 6 ? (insert ? '句子插入' : '段落填空') : '閱讀理解', insert};
+    Q.push(q); QM[q.id] = q; p.qids.push(q.id);
+  });
+});
+VOC.forEach(v => { const q = {id:'v-' + v[0], part:'V', stem:v[0], pos:v[1], ans:v[2], ex:v[3], exzh:v[4], tag:'單字'}; Q.push(q); QM[q.id] = q; });
+const byPart = p => Q.filter(q => q.part === p);
+
+// ---------- 進度儲存 ----------
+const blank = () => ({v:1, rec:{}, wrong:{}, star:{}, days:{}, exams:[]});
+let S = blank();
+let dbDoc = null, saveTimer = null, saving = false, pendingSave = false;
+const attempts = st => Object.values(st.rec || {}).reduce((a, r) => a + r.n, 0);
+function setSync(mode){
+  const el = $('#sync'); if (!el) return;
+  el.className = 'sync ' + mode;
+  el.querySelector('span').textContent = mode === 'cloud' ? '進度已雲端保存' : mode === 'none' ? '此環境無法保存進度' : '進度已存在此瀏覽器';
+}
+// IndexedDB 備援（localStorage 被清掉或不可用時仍保留紀錄）
+const IDB = {
+  open(){ return new Promise((res, rej) => { try { const r = indexedDB.open('toeic650', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch (e) { rej(e); } }); },
+  async get(k){ const db = await this.open(); return new Promise((res, rej) => { const t = db.transaction('kv').objectStore('kv').get(k); t.onsuccess = () => res(t.result); t.onerror = () => rej(t.error); }); },
+  async set(k, v){ const db = await this.open(); return new Promise((res, rej) => { const t = db.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = () => res(); t.onerror = () => rej(t.error); }); }
+};
+let canLS = false, canIDB = false;
+function save(){
+  try { localStorage.setItem(LSKEY, JSON.stringify(S)); canLS = true; } catch (e) { canLS = false; }
+  IDB.set(LSKEY, JSON.stringify(S)).then(() => { canIDB = true; }).catch(() => { canIDB = false; if (!canLS && !dbDoc) setSync('none'); });
+  if (!dbDoc) return;
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 1200);
+}
+async function flush(){
+  if (!dbDoc) return;
+  if (saving) { pendingSave = true; return; }
+  saving = true;
+  try { await dbDoc.set(JSON.parse(JSON.stringify(S))); setSync('cloud'); }
+  catch (e) { setSync('local'); }
+  saving = false;
+  if (pendingSave) { pendingSave = false; flush(); }
+}
+async function initStore(){
+  try { const raw = localStorage.getItem(LSKEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); localStorage.setItem(LSKEY + '-t', '1'); canLS = true; } catch (e) { canLS = false; }
+  try { const raw = await IDB.get(LSKEY); canIDB = true; if (raw) { const st = Object.assign(blank(), JSON.parse(raw)); if (attempts(st) > attempts(S)) S = st; } } catch (e) { canIDB = false; }
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+  setSync(canLS || canIDB ? 'local' : 'none');
+  if (!sess) render();
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    const uid = user ? await user.id() : null;
+    if (!db || !uid) return;
+    dbDoc = db.doc('data/users/' + uid + '/progress');
+    const snap = await dbDoc.get();
+    if (snap.exists) {
+      const cloud = Object.assign(blank(), JSON.parse(JSON.stringify(snap.data())));
+      if (attempts(cloud) >= attempts(S)) S = cloud; else flush();
+      try { localStorage.setItem(LSKEY, JSON.stringify(S)); } catch (e) {}
+    } else if (attempts(S) > 0) flush();
+    setSync('cloud');
+    if (!sess) render();
+  } catch (e) { setSync('local'); }
+}
+function record(id, ok, mode){
+  const r = S.rec[id] || {n:0, c:0}; r.n++; if (ok) r.c++; r.last = ok ? 1 : 0; r.t = Date.now(); S.rec[id] = r;
+  const k = dayKey(new Date()); S.days[k] = (S.days[k] || 0) + 1;
+  if (!ok) { const w = S.wrong[id] || {n:0}; w.n++; w.t = Date.now(); S.wrong[id] = w; }
+  else if (mode === 'review') delete S.wrong[id];
+}
+
+// ---------- 語音（使用裝置內建語音，離線也能播放） ----------
+const TTS = window.speechSynthesis || null;
+let voice = null, playAll = null;
+const vset = {rate:0.9, ex:0};
+function pickVoice(){
+  if (!TTS) return;
+  const vs = TTS.getVoices().filter(v => /^en[-_]/i.test(v.lang) || v.lang === 'en');
+  // 優先選「本機語音」(localService)，沒網路也能用
+  const local = vs.filter(v => v.localService);
+  const pool = local.length ? local : vs;
+  voice = pool.find(v => /en[-_]US/i.test(v.lang)) || pool[0] || null;
+}
+if (TTS) { pickVoice(); TTS.onvoiceschanged = () => { pickVoice(); if (!sess && tab === 'vocab') render(); }; }
+function speak(text, onend){
+  if (!TTS) { alert('這個瀏覽器不支援語音播放，建議使用 Chrome、Edge 或 Safari。'); return; }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = voice ? voice.lang : 'en-US'; if (voice) u.voice = voice; u.rate = vset.rate;
+  if (onend) { u.onend = onend; u.onerror = onend; }
+  TTS.speak(u);
+}
+function say(text){ stopAll(); TTS && TTS.cancel(); speak(text); }
+function stopAll(){ if (playAll) { playAll.stop = true; playAll = null; } if (TTS) TTS.cancel(); document.querySelectorAll('tr.playing').forEach(r => r.classList.remove('playing')); const b = $('#playall'); if (b) b.textContent = '▶ 連續播放'; }
+function startPlayAll(){
+  const words = vocabRows();
+  if (!words.length) return;
+  stopAll(); TTS.cancel();
+  const st = playAll = {i:0, stop:false};
+  const b = $('#playall'); if (b) b.textContent = '■ 停止播放';
+  const step = () => {
+    if (st.stop) return;
+    document.querySelectorAll('tr.playing').forEach(r => r.classList.remove('playing'));
+    if (st.i >= words.length) { stopAll(); return; }
+    const v = words[st.i];
+    const row = document.querySelector(`tr[data-w="${CSS.escape(v[0])}"]`);
+    if (row) { row.classList.add('playing'); row.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+    speak(v[0], () => {
+      if (st.stop) return;
+      const nxt = () => { st.i++; setTimeout(step, 700); };
+      if (vset.ex) setTimeout(() => !st.stop && speak(v[3], nxt), 400); else nxt();
+    });
+  };
+  step();
+}
+const spk = (text, cls) => `<button class="spk ${cls || ''}" data-act="say" data-say="${esc(text)}" aria-label="播放發音" title="播放發音">▶</button>`;
+
+// ---------- 統計 ----------
+function partStats(p){
+  const qs = byPart(p); let n = 0, c = 0, done = 0;
+  qs.forEach(q => { const r = S.rec[q.id]; if (r) { n += r.n; c += r.c; done++; } });
+  return {n, c, done, total:qs.length, acc:pct(c, n)};
+}
+function streak(){
+  let d = new Date(), s = 0;
+  if (!S.days[dayKey(d)]) d.setDate(d.getDate() - 1);
+  while (S.days[dayKey(d)]) { s++; d.setDate(d.getDate() - 1); }
+  return s;
+}
+const accClass = a => a >= TARGET ? 'ok' : a >= 55 ? 'warn' : 'bad';
+
+// ---------- 題目組合 ----------
+function makeItem(id){
+  const q = QM[id];
+  let opts = q.opts;
+  if (q.part === 'V') {
+    const others = shuffle(VOC.filter(v => v[2] !== q.ans && v[1].split('/')[0] === q.pos.split('/')[0]).map(v => v[2]));
+    const pool = others.length >= 3 ? others : shuffle(VOC.filter(v => v[2] !== q.ans).map(v => v[2]));
+    opts = [q.ans, ...pool.slice(0, 3)];
+  }
+  return {id, opts, order:shuffle([0, 1, 2, 3]), pick:null};
+}
+function orderPool(ids, pick){
+  if (pick === 'wrong') ids = ids.filter(id => S.wrong[id]);
+  if (pick === 'star') ids = ids.filter(id => S.star[id]);
+  ids = shuffle(ids);
+  if (pick === 'new') ids.sort((a, b) => (S.rec[a] ? 1 : 0) - (S.rec[b] ? 1 : 0));
+  return ids;
+}
+function pickPassages(part, count, pick){
+  let ps = shuffle(part === 6 ? P6 : P7);
+  const qualifies = p => pick === 'wrong' ? p.qids.some(id => S.wrong[id]) : pick === 'star' ? p.qids.some(id => S.star[id]) : true;
+  ps = ps.filter(qualifies);
+  if (pick === 'new') ps.sort((a, b) => a.qids.filter(id => S.rec[id]).length - b.qids.filter(id => S.rec[id]).length);
+  const out = [];
+  for (const p of ps) {
+    if (count && out.length >= count) break;
+    const ids = (pick === 'wrong') ? p.qids.filter(id => S.wrong[id]) : (pick === 'star') ? p.qids.filter(id => S.star[id]) : p.qids;
+    out.push(...ids);
+  }
+  return out;
+}
+function buildPractice(part, count, pick){
+  let ids = [];
+  if (part === 5 || part === 'V') { ids = orderPool(byPart(part).map(q => q.id), pick); if (count) ids = ids.slice(0, count); }
+  else if (part === 6 || part === 7) ids = pickPassages(part, count, pick);
+  else {
+    const n = count || 30;
+    const p5 = orderPool(byPart(5).map(q => q.id), pick).slice(0, Math.ceil(n / 2));
+    ids = [...p5, ...pickPassages(6, Math.round(n * 0.2), pick), ...pickPassages(7, n - p5.length - Math.round(n * 0.2), pick)];
+    if (!count) ids = [...orderPool(byPart(5).map(q => q.id), pick), ...pickPassages(6, 0, pick), ...pickPassages(7, 0, pick)];
+  }
+  return ids;
+}
+function buildExam(n){
+  const p5 = shuffle(byPart(5).map(q => q.id)).slice(0, Math.round(n * 0.5));
+  const need6 = Math.round(n * 0.2); const p6 = [];
+  for (const p of shuffle(P6)) { if (p6.length >= need6) break; p6.push(...p.qids); }
+  const p7 = [];
+  for (const p of shuffle(P7)) { if (p5.length + p6.length + p7.length >= n) break; p7.push(...p.qids); }
+  return [...p5, ...p6, ...p7];
+}
+
+// ---------- 狀態 ----------
+let tab = 'home';
+let sess = null;         // {mode:'practice'|'review'|'exam', items, i, answered, ...}
+let view = null;         // 'result' 畫面資料
+let setup = {part:5, count:10, pick:'new'};
+let vsetup = {count:10, pick:'new', q:''};
+let esetup = {n:20};
+let wfilter = 'all';
+let timerId = null;
+let confirmSubmit = false, confirmQuit = false;
+
+function go(t){ if (sess && sess.mode === 'exam') return; stopAll(); stopTimer(); sess = null; view = null; tab = t; render(); window.scrollTo(0, 0); }
+function startSession(mode, ids, extra){
+  if (!ids.length) return;
+  sess = Object.assign({mode, items:ids.map(makeItem), i:0, showZh:false, start:Date.now()}, extra || {});
+  view = null; confirmSubmit = false; confirmQuit = false;
+  if (mode === 'exam') startTimer();
+  render(); window.scrollTo(0, 0);
+}
+
+// ---------- 渲染 ----------
+function render(){
+  document.querySelectorAll('#nav button').forEach(b => {
+    b.setAttribute('aria-current', b.dataset.tab === tab ? 'page' : 'false');
+    b.disabled = !!(sess && sess.mode === 'exam');
+  });
+  const v = $('#view');
+  if (sess) v.innerHTML = renderSession();
+  else if (view) v.innerHTML = renderResult();
+  else v.innerHTML = ({home:renderHome, practice:renderPractice, exam:renderExamSetup, wrong:renderWrong, vocab:renderVocab})[tab]();
+}
+
+function renderHome(){
+  const all = ['V', 5, 6, 7].map(p => partStats(p));
+  const n = all.reduce((a, s) => a + s.n, 0), c = all.reduce((a, s) => a + s.c, 0);
+  const done = all.reduce((a, s) => a + s.done, 0);
+  const acc = pct(c, n); const wrongN = Object.keys(S.wrong).length; const st = streak();
+  const days = []; const d = new Date(); d.setDate(d.getDate() - 13);
+  for (let i = 0; i < 14; i++) { days.push({k:dayKey(d), l:(d.getMonth() + 1) + '/' + d.getDate(), v:S.days[dayKey(d)] || 0}); d.setDate(d.getDate() + 1); }
+  const max = Math.max(10, ...days.map(x => x.v));
+  const exams = (S.exams || []).slice(-5).reverse();
+  const reading = [5, 6, 7].map(p => partStats(p));
+  const rn = reading.reduce((a, s) => a + s.n, 0), rc = reading.reduce((a, s) => a + s.c, 0);
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><div class="eyebrow">目標 TOEIC 650</div><h1>${n ? '今天也刷一點吧' : '從第一組題目開始'}</h1></div>
+      <div class="row">
+        <button class="btn primary" data-act="quick" data-part="5">刷 10 題 Part 5</button>
+        <button class="btn" data-act="goexam">模擬考</button>
+        ${wrongN ? `<button class="btn" data-act="reviewall">重做錯題 (${wrongN})</button>` : ''}
+      </div>
+    </div>
+    <div class="grid g4">
+      <div class="card kpi"><div class="l">已練習題目</div><div class="v">${done}<small> / ${Q.length}</small></div><div class="l">累計作答 <span class="num">${n}</span> 次</div></div>
+      <div class="card kpi"><div class="l">整體答對率</div><div class="v">${n ? acc + '<small>%</small>' : '—'}</div>${n ? `<span class="pill ${accClass(acc)}">${acc >= TARGET ? '已達目標線' : '目標 ' + TARGET + '%'}</span>` : '<div class="l">目標 ' + TARGET + '%</div>'}</div>
+      <div class="card kpi"><div class="l">錯題本</div><div class="v">${wrongN}<small> 題</small></div><div class="l">${wrongN ? '答對後會自動移出' : '目前沒有錯題'}</div></div>
+      <div class="card kpi"><div class="l">連續學習</div><div class="v">${st}<small> 天</small></div><div class="l">今天作答 <span class="num">${S.days[dayKey(new Date())] || 0}</span> 題</div></div>
+    </div>
+    <div class="grid g2">
+      <div class="card stack">
+        <div class="row" style="justify-content:space-between"><h2>各題型答對率</h2><span class="muted" style="font-size:12px">黑線 = 目標 ${TARGET}%</span></div>
+        <div class="bars">
+          ${[5, 6, 7, 'V'].map(p => { const s = partStats(p); return `
+          <div class="bar-row"><div><b>${PARTS[p].name}</b><div class="muted" style="font-size:12px">${PARTS[p].zh}</div></div>
+            <div class="track" title="${s.done}/${s.total} 題已練習">${s.n ? `<div class="fill ${accClass(s.acc)}" style="width:${s.acc}%"></div>` : ''}<div class="target" style="left:${TARGET}%"></div></div>
+            <div class="num" style="text-align:right">${s.n ? s.acc + '%' : '—'}</div></div>`; }).join('')}
+        </div>
+        <div class="muted" style="font-size:13px">閱讀部分目前答對率：<b class="num">${rn ? pct(rc, rn) + '%' : '尚無資料'}</b>。650 分通常需要閱讀約 300 分，約等於答對 6 成；練習時把答對率穩定在 ${TARGET}% 以上，考場上較有餘裕（僅供參考）。</div>
+      </div>
+      <div class="card stack">
+        <div class="row" style="justify-content:space-between"><h2>近 14 天作答量</h2><span class="muted num" style="font-size:12px">共 ${days.reduce((a, x) => a + x.v, 0)} 題</span></div>
+        <div>
+          <div class="act">${days.map(x => `<div class="${x.v ? '' : 'z'}" style="height:${x.v ? Math.max(4, x.v / max * 100) : 2}%" title="${x.l}：${x.v} 題"></div>`).join('')}</div>
+          <div class="act-l">${days.map((x, i) => `<span>${i % 2 === 1 ? x.l : ''}</span>`).join('')}</div>
+        </div>
+        <h3>最近模擬考</h3>
+        ${exams.length ? `<div class="tbl-wrap"><table><thead><tr><th>日期</th><th>題數</th><th>答對</th><th>用時</th></tr></thead><tbody>
+          ${exams.map(e => `<tr><td class="num">${esc(e.d)}</td><td class="num">${e.n}</td><td><span class="pill ${accClass(pct(e.c, e.n))}">${e.c} 題 · ${pct(e.c, e.n)}%</span></td><td class="num">${fmtTime(e.sec)}</td></tr>`).join('')}
+          </tbody></table></div>` : '<div class="muted" style="font-size:14px">還沒考過。建議每週做一次 40 題模擬考，檢查時間分配。</div>'}
+      </div>
+    </div>
+    <div class="card stack">
+      <div class="row" style="justify-content:space-between"><h2>學習紀錄備份</h2>
+        <div class="row"><button class="btn" data-act="export">下載備份檔</button><button class="btn" data-act="import">從備份檔還原</button><input type="file" id="importfile" accept=".json,application/json" hidden></div></div>
+      ${!canLS && !canIDB && !dbDoc ? '<div class="warnbox">目前的開啟方式無法保存紀錄（例如在聊天預覽視窗、App 內建預覽或無痕模式中開啟）。請把檔案下載到電腦，用 Chrome / Edge / Safari 直接開啟。</div>' : ''}
+      <div class="muted" style="font-size:13px">紀錄會自動存在這台裝置的瀏覽器裡，關掉再開仍會保留。請固定用同一個瀏覽器、同一個檔案位置開啟；若要換電腦或清除瀏覽器資料前，先下載備份檔。</div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:10px">650 分閱讀策略</h2>
+      <ul class="tips">
+        <li><b>Part 5 每題 20–30 秒。</b>先看選項：選項是同字根不同詞性（present / presents / presented）就判斷空格詞性，不必讀完整句。</li>
+        <li><b>Part 6 注意上下文。</b>時態、連接副詞（However、Alternatively）與句子插入題都要看前後句。</li>
+        <li><b>Part 7 先看題目再找答案。</b>正確選項通常是原文的「換句話說」，例如 seven days in advance → a week ahead。</li>
+        <li><b>不會的題目先猜再跳過。</b>多益答錯不倒扣，每題都要填答。</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+function segBtns(key, obj, options){
+  return `<div class="seg">${options.map(([v, l]) => `<button data-act="set" data-obj="${obj}" data-key="${key}" data-val="${v}" aria-pressed="${String(({setup, vsetup, esetup, vset})[obj][key]) === String(v)}">${l}</button>`).join('')}</div>`;
+}
+function renderPractice(){
+  const parts = [[5, byPart(5).length + ' 題'], [6, P6.length + ' 篇 · ' + byPart(6).length + ' 題'], [7, P7.length + ' 篇 · ' + byPart(7).length + ' 題'], ['mix', '依正式考比例']];
+  const ids = buildPractice(setup.part === 'mix' ? 'mix' : setup.part, setup.count, setup.pick);
+  const unit = (setup.part === 6 || setup.part === 7) ? '篇' : '題';
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div><div class="eyebrow">練習模式</div><h1>每題作答後立即看解析</h1></div>
+    <div class="card stack">
+      <div class="field"><div class="lab">題型</div>
+        <div class="grid g4">${parts.map(([p, sub]) => `<button class="partcard" data-act="set" data-obj="setup" data-key="part" data-val="${p}" aria-pressed="${String(setup.part) === String(p)}">
+          <b>${p === 'mix' ? '綜合' : PARTS[p].name + ' ' + PARTS[p].zh}</b><span class="en">${p === 'mix' ? 'Part 5 + 6 + 7' : PARTS[p].en}</span><span class="muted" style="font-size:13px">${sub}</span></button>`).join('')}</div>
+      </div>
+      <div class="grid g2">
+        <div class="field"><div class="lab">數量（${unit}）</div>${segBtns('count', 'setup', (setup.part === 6 || setup.part === 7) ? [[1, '1 篇'], [2, '2 篇'], [0, '全部']] : [[10, '10 題'], [20, '20 題'], [0, '全部']])}</div>
+        <div class="field"><div class="lab">出題方式</div>${segBtns('pick', 'setup', [['new', '沒做過的優先'], ['rand', '完全隨機'], ['wrong', '只出錯題'], ['star', '只出收藏']])}</div>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <span class="muted">${ids.length ? `本次共 <b class="num">${ids.length}</b> 題` : (setup.pick === 'wrong' ? '這個題型目前沒有錯題' : setup.pick === 'star' ? '這個題型還沒有收藏題目' : '沒有題目')}</span>
+        <button class="btn primary" data-act="startpractice" ${ids.length ? '' : 'disabled'}>開始練習</button>
+      </div>
+    </div>
+    <div class="muted" style="font-size:13px">快捷鍵：<kbd>1</kbd>–<kbd>4</kbd> 或 <kbd>A</kbd>–<kbd>D</kbd> 選答案，<kbd>Enter</kbd> 下一題。答錯的題目會自動加入錯題本。</div>
+  </div>`;
+}
+
+function renderExamSetup(){
+  const sizes = [[20, '迷你 20 題'], [40, '標準 40 題'], [60, '加強 60 題']];
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div><div class="eyebrow">模擬考</div><h1>限時作答，交卷後看詳解</h1></div>
+    <div class="card stack">
+      <div class="field"><div class="lab">題數</div>${segBtns('n', 'esetup', sizes)}</div>
+      <div class="muted" style="font-size:14px">題目依正式考比例組成：Part 5 約一半、Part 6 約兩成、Part 7 約三成（以整篇文章為單位，實際題數可能多 1–3 題）。每題配 45 秒，和正式考 100 題 75 分鐘的節奏相同。</div>
+      <div class="row" style="justify-content:space-between">
+        <span class="muted">時間限制約 <b class="num">${Math.round(esetup.n * 45 / 60)}</b> 分鐘</span>
+        <button class="btn primary" data-act="startexam">開始考試</button>
+      </div>
+    </div>
+    <div class="muted" style="font-size:13px">考試中可以跳題、改答案；時間到會自動交卷。考試期間無法切換到其他分頁。</div>
+  </div>`;
+}
+
+function passageHtml(p, curNum){
+  let t = esc(p.text).replace(/__\[(\d)\]__/g, (m, n) => `<span class="blank${String(n) === String(curNum) ? ' cur' : ''}">[${n}]</span>`);
+  return t;
+}
+function renderSession(){
+  const s = sess, it = s.items[s.i], q = QM[it.id], exam = s.mode === 'exam';
+  const answered = !exam && it.pick !== null;
+  const total = s.items.length;
+  const doneN = s.items.filter(x => x.pick !== null).length;
+  const p = q.pid ? PASS[q.pid] : null;
+  const correctPos = it.order.indexOf(0);
+  let stem;
+  if (q.part === 'V') stem = `<div class="muted" style="font-size:13px">選出正確的中文意思</div><div class="row" style="gap:12px"><div class="word">${esc(q.stem)}</div>${TTS ? spk(q.stem, 'lg') : ''}</div><div class="muted">${esc(q.pos)}</div>`;
+  else if (q.part === 6) stem = `<div class="stem">${q.insert ? `選出最適合填入空格 <span class="blank cur">[${q.num}]</span> 的句子` : `選出最適合填入空格 <span class="blank cur">[${q.num}]</span> 的答案`}</div>`;
+  else if (q.part === 5) stem = `<div class="stem">${esc(q.stem).replace('____', '<span class="gap"></span>')}</div>`;
+  else stem = `<div class="stem">${esc(q.stem)}</div>`;
+  const opts = it.order.map((oi, pos) => {
+    let cls = 'opt';
+    if (answered) { if (oi === 0) cls += ' right'; else if (it.pick === pos) cls += ' wrong'; }
+    else if (it.pick === pos) cls += ' sel';
+    return `<button class="${cls}" data-act="pick" data-pos="${pos}" ${answered ? 'disabled' : ''}><span class="bub">${LET[pos]}</span><span class="t">${esc(it.opts[oi])}</span></button>`;
+  }).join('');
+  let fb = '';
+  if (answered) {
+    const ok = it.pick === correctPos;
+    fb = `<div class="fb">
+      <div class="verdict ${ok ? 'ok' : 'bad'}">${ok ? '答對了' : '答錯了'}　<span class="muted" style="font-size:14px;font-weight:500">正解 (${LET[correctPos]}) ${esc(it.opts[0])}</span></div>
+      ${explain(q)}
+    </div>`;
+  }
+  const head = exam ? `
+    <div class="qhead">
+      <span class="timer ${s.left <= 60 ? 'low' : ''}" id="timer">${fmtTime(Math.max(0, s.left))}</span>
+      <span class="muted num">已作答 ${doneN} / ${total}</span>
+      <div class="prog"><i style="width:${doneN / total * 100}%"></i></div>
+      <button class="btn" data-act="asksubmit">交卷</button>
+      <button class="btn ghost" data-act="askquit">放棄</button>
+    </div>
+    ${confirmSubmit ? `<div class="confirm"><span>${doneN < total ? `還有 <b>${total - doneN}</b> 題沒作答，確定要交卷嗎？` : '確定要交卷嗎？'}</span><button class="btn primary" data-act="submit">確定交卷</button><button class="btn" data-act="cancelconfirm">繼續作答</button></div>` : ''}
+    ${confirmQuit ? `<div class="confirm"><span>放棄後這次作答不會記錄。</span><button class="btn danger" data-act="quit">確定放棄</button><button class="btn" data-act="cancelconfirm">繼續作答</button></div>` : ''}` : `
+    <div class="qhead">
+      <button class="btn ghost" data-act="endpractice">← 結束</button>
+      <span class="muted num">第 ${s.i + 1} / ${total} 題</span>
+      <div class="prog"><i style="width:${doneN / total * 100}%"></i></div>
+      ${s.mode === 'review' ? '<span class="pill warn">錯題複習：答對即移出錯題本</span>' : ''}
+    </div>`;
+  const qcard = `
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px">
+        <div class="row" style="gap:6px"><span class="pill ac">${PARTS[q.part].name}</span><span class="pill">${esc(q.tag)}</span>${exam ? `<span class="pill num">Q${s.i + 1}</span>` : ''}</div>
+        <button class="star" data-act="star" aria-pressed="${!!S.star[q.id]}" aria-label="收藏這題" title="收藏">${S.star[q.id] ? '★' : '☆'}</button>
+      </div>
+      ${stem}
+      <div class="opts">${opts}</div>
+      ${fb}
+      <div class="qfoot">
+        ${exam ? `<button class="btn" data-act="prev" ${s.i === 0 ? 'disabled' : ''}>← 上一題</button><button class="btn primary" data-act="next">${s.i === total - 1 ? '檢查答案卡' : '下一題 →'}</button>`
+          : `<span></span>${answered ? `<button class="btn primary" data-act="next">${s.i === total - 1 ? '看結果' : '下一題 →'}</button>` : `<button class="btn ghost" data-act="skip">跳過</button>`}`}
+      </div>
+    </div>`;
+  const sheet = exam ? `<div class="card"><div class="lab muted" style="font-size:13px;font-weight:700;margin-bottom:8px">答案卡</div><div class="sheet">${s.items.map((x, i) => `<button data-act="jump" data-i="${i}" class="${x.pick !== null ? 'done' : ''} ${i === s.i ? 'cur' : ''}">${i + 1}</button>`).join('')}</div></div>` : '';
+  const pcard = p ? `<div class="card passage-card"><div class="row" style="justify-content:space-between;margin-bottom:8px"><h3>${esc(p.title)}</h3>${answered ? `<button class="btn ghost" data-act="togglezh">${s.showZh ? '看英文' : '看中文翻譯'}</button>` : ''}</div>
+      <div class="passage">${answered && s.showZh ? `<div class="zh" style="border:0;padding:0">${esc(p.zh)}</div>` : passageHtml(p, q.part === 6 ? q.num : null)}</div></div>` : '';
+  return `${head}<div class="qlayout ${p ? 'two' : ''}">${pcard}<div class="stack" style="min-width:0">${qcard}${sheet}</div></div>`;
+}
+function explain(q){
+  if (q.part === 'V') return `<div class="exp"><b>${esc(q.stem)}</b> <span class="muted">${esc(q.pos)}</span> ${esc(q.ans)}<br>例句：${TTS ? spk(q.ex, 'sm') + ' ' : ''}${esc(q.ex)}<div class="muted">${esc(q.exzh)}</div></div>`;
+  return `${q.zh ? `<div class="zh">${esc(q.zh)}</div>` : ''}<div class="exp"><b>解析：</b>${esc(q.exp)}</div>`;
+}
+
+function renderResult(){
+  const r = view; const items = r.items;
+  const c = items.filter(x => x.pick === x.order.indexOf(0)).length;
+  const byP = {};
+  items.forEach(x => { const q = QM[x.id]; const b = byP[q.part] = byP[q.part] || {n:0, c:0}; b.n++; if (x.pick === x.order.indexOf(0)) b.c++; });
+  const a = pct(c, items.length);
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div class="eyebrow">${r.mode === 'exam' ? '模擬考結果' : r.mode === 'review' ? '錯題複習結果' : '練習結果'}</div>
+    <div class="card row" style="justify-content:space-between;gap:24px">
+      <div class="row" style="gap:18px;align-items:flex-end">
+        <div><div class="score-big">${c}<span class="muted" style="font-size:22px"> / ${items.length}</span></div><div class="muted">答對題數</div></div>
+        <div><span class="pill ${accClass(a)}" style="font-size:14px">答對率 ${a}%</span>${r.sec != null ? `<div class="muted num" style="margin-top:6px">用時 ${fmtTime(r.sec)}${r.timeout ? '（時間到自動交卷）' : ''}</div>` : ''}</div>
+      </div>
+      <div class="row">
+        ${Object.keys(byP).map(p => `<span class="pill">${PARTS[p].name} <b class="num">${byP[p].c}/${byP[p].n}</b></span>`).join('')}
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn primary" data-act="again">${r.mode === 'exam' ? '再考一次' : '再練一組'}</button>
+      ${items.some(x => x.pick !== x.order.indexOf(0)) ? `<button class="btn" data-act="redowrong">重做本次錯題</button>` : ''}
+      <button class="btn ghost" data-act="tohome">回總覽</button>
+    </div>
+    <div class="card"><h2 style="margin-bottom:8px">逐題檢討</h2><div class="list">
+      ${items.map((x, i) => { const q = QM[x.id]; const cp = x.order.indexOf(0); const ok = x.pick === cp; const skipped = x.pick === null;
+        return `<details ${!ok && i < 200 ? '' : ''}><summary><span class="mark ${skipped ? 'n' : ok ? 'r' : 'w'}">${skipped ? '–' : ok ? '✓' : '✗'}</span><span class="pill">${PARTS[q.part].name}</span><span class="s">${esc(snippet(q))}</span><span class="muted num" style="font-size:12px">${i + 1}</span></summary>
+        <div class="body">${q.pid ? `<div class="muted" style="font-size:13px">${esc(PASS[q.pid].title)}</div>` : ''}
+          <div>${esc(q.part === 6 ? '空格 [' + q.num + ']' : q.stem)}</div>
+          <div>你的答案：${skipped ? '<span class="muted">未作答</span>' : `<b style="color:var(--${ok ? 'ok' : 'bad'})">(${LET[x.pick]}) ${esc(x.opts[x.order[x.pick]])}</b>`}　正解：<b style="color:var(--ok)">(${LET[cp]}) ${esc(x.opts[0])}</b></div>
+          ${explain(q)}</div></details>`; }).join('')}
+    </div></div>
+  </div>`;
+}
+function snippet(q){
+  if (q.part === 'V') return q.stem + '　' + q.ans;
+  if (q.part === 6) return PASS[q.pid].title + ' · 空格 [' + q.num + ']';
+  return q.stem;
+}
+
+function renderWrong(){
+  const filters = [['all', '全部'], ['5', 'Part 5'], ['6', 'Part 6'], ['7', 'Part 7'], ['V', '單字'], ['star', '★ 收藏']];
+  const src = wfilter === 'star' ? S.star : S.wrong;
+  let ids = Object.keys(src).filter(id => QM[id]);
+  if (wfilter !== 'all' && wfilter !== 'star') ids = ids.filter(id => String(QM[id].part) === wfilter);
+  ids.sort((a, b) => (src[b].t || 0) - (src[a].t || 0));
+  const cnt = f => { const s = f === 'star' ? S.star : S.wrong; return Object.keys(s).filter(id => QM[id] && (f === 'all' || f === 'star' || String(QM[id].part) === f)).length; };
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div><div class="eyebrow">錯題本</div><h1>把錯過的題目刷到會</h1></div>
+      <button class="btn primary" data-act="reviewfilter" ${ids.length ? '' : 'disabled'}>${wfilter === 'star' ? '練習收藏題' : '重做這些錯題'}（${ids.length}）</button>
+    </div>
+    <div class="seg">${filters.map(([f, l]) => `<button data-act="wfilter" data-val="${f}" aria-pressed="${wfilter === f}">${l} <span class="num muted">${cnt(f)}</span></button>`).join('')}</div>
+    <div class="card">
+      ${ids.length ? `<div class="list">${ids.map(id => { const q = QM[id]; const w = S.wrong[id]; const r = S.rec[id];
+        return `<details><summary><span class="mark ${w ? 'w' : 'n'}">${w ? '✗' : '★'}</span><span class="pill">${PARTS[q.part].name}</span><span class="s">${esc(snippet(q))}</span><span class="muted" style="font-size:12px;white-space:nowrap">${w ? '錯 ' + w.n + ' 次' : ''}${r ? ' · 對 ' + r.c + '/' + r.n : ''}</span></summary>
+        <div class="body">${q.pid ? `<details><summary style="display:block;padding:0;color:var(--accent);font-size:13px">展開文章：${esc(PASS[q.pid].title)}</summary><div class="passage" style="margin-top:8px">${passageHtml(PASS[q.pid], q.part === 6 ? q.num : null)}</div></details>` : ''}
+          <div>${esc(q.part === 6 ? '空格 [' + q.num + ']' : q.stem)}</div>
+          <div>正解：<b style="color:var(--ok)">${esc(q.part === 'V' ? q.ans : q.opts[0])}</b></div>
+          ${explain(q)}
+          <div class="row">${w ? `<button class="btn" data-act="unwrong" data-id="${id}">已學會，移出錯題本</button>` : ''}<button class="btn ghost" data-act="unstar" data-id="${id}">${S.star[id] ? '取消收藏' : '加入收藏'}</button></div>
+        </div></details>`; }).join('')}</div>`
+      : `<div class="empty">${wfilter === 'star' ? '還沒有收藏的題目。作答時點右上角的 ☆ 就能收藏。' : '這裡目前沒有錯題。去練習區刷幾題吧！'}</div>`}
+    </div>
+    <div class="muted" style="font-size:13px">在「錯題複習」中答對的題目會自動移出錯題本；一般練習答對則保留，方便再確認一次。</div>
+  </div>`;
+}
+
+function renderVocab(){
+  const s = partStats('V');
+  const n = vsetup.count || VOC.length;
+  const ids = orderPool(byPart('V').map(q => q.id), vsetup.pick).slice(0, n);
+  const rows = vocabRows();
+  return `
+  <div class="stack" style="padding-top:22px">
+    <div><div class="eyebrow">核心單字 · ${VOC.length} 字</div><h1>多益高頻商務單字</h1></div>
+    <div class="card stack">
+      <div class="grid g2">
+        <div class="field"><div class="lab">數量</div>${segBtns('count', 'vsetup', [[10, '10 字'], [20, '20 字'], [0, '全部']])}</div>
+        <div class="field"><div class="lab">出題方式</div>${segBtns('pick', 'vsetup', [['new', '沒背過的優先'], ['rand', '隨機'], ['wrong', '只考錯的']])}</div>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <span class="muted">已練習 <b class="num">${s.done}</b> / ${s.total} 字${s.n ? ' · 答對率 <b class="num">' + s.acc + '%</b>' : ''}</span>
+        <button class="btn primary" data-act="startvocab" ${ids.length ? '' : 'disabled'}>${ids.length ? `開始測驗（${ids.length} 字）` : '目前沒有答錯的單字'}</button>
+      </div>
+    </div>
+    <div class="card stack">
+      <div class="row" style="justify-content:space-between"><h2>單字表</h2><input type="search" id="vq" placeholder="搜尋英文或中文" value="${esc(vsetup.q)}" aria-label="搜尋單字"></div>
+      ${TTS ? `<div class="row" style="gap:12px;flex-wrap:wrap">
+        <button class="btn primary" id="playall" data-act="playall">${playAll ? '■ 停止播放' : '▶ 連續播放'}</button>
+        <div class="field"><div class="lab">語速</div>${segBtns('rate', 'vset', [[0.7, '慢'], [0.9, '正常'], [1.1, '快']])}</div>
+        <div class="field"><div class="lab">連播內容</div>${segBtns('ex', 'vset', [[0, '只唸單字'], [1, '單字＋例句']])}</div>
+      </div>
+      ${voice ? `<div class="muted" style="font-size:12px">使用語音：${esc(voice.name)}${voice.localService ? '（本機語音，離線可用）' : '（此語音可能需要網路）'}</div>` : '<div class="warnbox">找不到英文語音。請到系統設定安裝英文語音（Windows：設定 › 時間與語言 › 語音；iPhone：設定 › 輔助使用 › 朗讀內容 › 聲音）。</div>'}`
+      : '<div class="warnbox">這個瀏覽器不支援語音播放，建議使用 Chrome、Edge 或 Safari 開啟。</div>'}
+      <div class="tbl-wrap"><table id="vtbl"><thead><tr><th>單字</th><th>詞性</th><th>中文</th><th>例句</th><th>狀態</th></tr></thead><tbody id="vbody">
+        ${vocabRowsHtml(rows)}
+      </tbody></table></div>
+    </div>
+  </div>`;
+}
+
+function vocabRows(){
+  const qstr = vsetup.q.trim().toLowerCase();
+  return VOC.filter(v => !qstr || v[0].toLowerCase().includes(qstr) || v[2].includes(vsetup.q.trim()));
+}
+function vocabRowsHtml(rows){
+  return rows.map(v => { const id = 'v-' + v[0]; const r = S.rec[id]; return `<tr data-w="${esc(v[0])}"><td class="num"><div class="wcell">${TTS ? spk(v[0]) : ''}<b>${esc(v[0])}</b></div></td><td class="muted">${esc(v[1])}</td><td>${esc(v[2])}</td><td>${TTS ? spk(v[3], 'sm') + ' ' : ''}${esc(v[3])}<div class="muted" style="font-size:13px">${esc(v[4])}</div></td><td>${S.wrong[id] ? '<span class="pill bad">待加強</span>' : r ? '<span class="pill ok">答對過</span>' : '<span class="pill">未練習</span>'}</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">找不到符合的單字</td></tr>';
+}
+
+// ---------- 作答流程 ----------
+function pick(pos){
+  const s = sess; const it = s.items[s.i];
+  if (s.mode === 'exam') { it.pick = pos; render(); return; }
+  if (it.pick !== null) return;
+  it.pick = pos; s.showZh = false;
+  record(it.id, pos === it.order.indexOf(0), s.mode); save();
+  render();
+}
+function next(){
+  const s = sess;
+  if (s.mode === 'exam') { if (s.i < s.items.length - 1) { s.i++; render(); scrollQ(); } else { confirmSubmit = true; render(); } return; }
+  if (s.i < s.items.length - 1) { s.i++; s.showZh = false; render(); scrollQ(); }
+  else finishPractice();
+}
+function scrollQ(){ const q = QM[sess.items[sess.i].id]; const prev = sess.i > 0 ? QM[sess.items[sess.i - 1].id] : null; if (!q.pid || !prev || prev.pid !== q.pid) window.scrollTo(0, 0); }
+function finishPractice(){
+  const s = sess; const answered = s.items.filter(x => x.pick !== null);
+  sess = null;
+  if (!answered.length) { render(); return; }
+  view = {mode:s.mode, items:answered, part:s.part, count:s.count, pick:s.pick, kind:s.kind};
+  render(); window.scrollTo(0, 0);
+}
+function startTimer(){
+  stopTimer();
+  sess.limit = sess.items.length * 45; sess.left = sess.limit;
+  timerId = setInterval(() => {
+    if (!sess || sess.mode !== 'exam') { stopTimer(); return; }
+    sess.left = sess.limit - Math.floor((Date.now() - sess.start) / 1000);
+    const el = $('#timer');
+    if (el) { el.textContent = fmtTime(Math.max(0, sess.left)); el.classList.toggle('low', sess.left <= 60); }
+    if (sess.left <= 0) submitExam(true);
+  }, 1000);
+}
+function stopTimer(){ if (timerId) clearInterval(timerId); timerId = null; }
+function submitExam(timeout){
+  stopTimer();
+  const s = sess; const sec = Math.min(s.limit, Math.round((Date.now() - s.start) / 1000));
+  s.items.forEach(x => record(x.id, x.pick === x.order.indexOf(0), 'exam'));
+  const c = s.items.filter(x => x.pick === x.order.indexOf(0)).length;
+  S.exams = (S.exams || []).concat([{d:dayKey(new Date()), n:s.items.length, c, sec}]).slice(-30);
+  save();
+  sess = null; confirmSubmit = false;
+  view = {mode:'exam', items:s.items, sec, timeout:!!timeout, n:s.n};
+  render(); window.scrollTo(0, 0);
+}
+
+// ---------- 事件 ----------
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-tab],[data-act]'); if (!b || b.disabled) return;
+  if (b.dataset.tab) { go(b.dataset.tab); return; }
+  const a = b.dataset.act;
+  switch (a) {
+    case 'say': say(b.dataset.say); break;
+    case 'playall': if (playAll) stopAll(); else startPlayAll(); break;
+    case 'export': exportData(); break;
+    case 'import': { const f = $('#importfile'); if (f) f.click(); break; }
+    case 'set': { const o = ({setup, vsetup, esetup, vset})[b.dataset.obj]; let v = b.dataset.val; if (/^\d+(\.\d+)?$/.test(v)) v = +v; o[b.dataset.key] = v; if (b.dataset.obj === 'vsetup') stopAll();
+      if (b.dataset.key === 'part') setup.count = (v === 6 || v === 7) ? 2 : 10; render(); break; }
+    case 'quick': startSession('practice', buildPractice(5, 10, 'new'), {part:5, count:10, pick:'new', kind:'practice'}); tab = 'practice'; break;
+    case 'goexam': go('exam'); break;
+    case 'tohome': go('home'); break;
+    case 'reviewall': { const ids = sortIds(Object.keys(S.wrong).filter(id => QM[id])); tab = 'wrong'; startSession('review', ids, {kind:'review'}); break; }
+    case 'startpractice': startSession('practice', buildPractice(setup.part, setup.count, setup.pick), {part:setup.part, count:setup.count, pick:setup.pick, kind:'practice'}); break;
+    case 'startvocab': startSession(vsetup.pick === 'wrong' ? 'review' : 'practice', orderPool(byPart('V').map(q => q.id), vsetup.pick).slice(0, vsetup.count || VOC.length), {kind:'vocab'}); break;
+    case 'startexam': startSession('exam', buildExam(esetup.n), {n:esetup.n}); break;
+    case 'pick': pick(+b.dataset.pos); break;
+    case 'next': next(); break;
+    case 'skip': if (sess.i < sess.items.length - 1) { sess.i++; render(); scrollQ(); } else finishPractice(); break;
+    case 'prev': if (sess.i > 0) { sess.i--; render(); scrollQ(); } break;
+    case 'jump': sess.i = +b.dataset.i; render(); window.scrollTo(0, 0); break;
+    case 'endpractice': finishPractice(); break;
+    case 'togglezh': sess.showZh = !sess.showZh; render(); break;
+    case 'star': { const id = sess.items[sess.i].id; if (S.star[id]) delete S.star[id]; else S.star[id] = {t:Date.now()}; save(); render(); break; }
+    case 'unstar': { const id = b.dataset.id; if (S.star[id]) delete S.star[id]; else S.star[id] = {t:Date.now()}; save(); render(); break; }
+    case 'unwrong': delete S.wrong[b.dataset.id]; save(); render(); break;
+    case 'wfilter': wfilter = b.dataset.val; render(); break;
+    case 'reviewfilter': {
+      const src = wfilter === 'star' ? S.star : S.wrong;
+      let ids = Object.keys(src).filter(id => QM[id]);
+      if (wfilter !== 'all' && wfilter !== 'star') ids = ids.filter(id => String(QM[id].part) === wfilter);
+      startSession(wfilter === 'star' ? 'practice' : 'review', sortIds(ids), {kind:'review'}); break; }
+    case 'asksubmit': confirmSubmit = true; confirmQuit = false; render(); break;
+    case 'askquit': confirmQuit = true; confirmSubmit = false; render(); break;
+    case 'cancelconfirm': confirmSubmit = confirmQuit = false; render(); break;
+    case 'submit': submitExam(false); break;
+    case 'quit': stopTimer(); sess = null; confirmQuit = false; render(); break;
+    case 'again': {
+      const r = view; view = null;
+      if (r.mode === 'exam') startSession('exam', buildExam(r.n || esetup.n), {n:r.n || esetup.n});
+      else if (r.kind === 'vocab') startSession('practice', orderPool(byPart('V').map(q => q.id), vsetup.pick === 'wrong' ? 'new' : vsetup.pick).slice(0, vsetup.count || VOC.length), {kind:'vocab'});
+      else if (r.kind === 'review') { const ids = sortIds(Object.keys(S.wrong).filter(id => QM[id])); if (ids.length) startSession('review', ids, {kind:'review'}); else render(); }
+      else startSession('practice', buildPractice(r.part, r.count, r.pick === 'wrong' ? 'new' : r.pick), {part:r.part, count:r.count, pick:r.pick, kind:'practice'});
+      break; }
+    case 'redowrong': { const ids = view.items.filter(x => x.pick !== x.order.indexOf(0)).map(x => x.id); view = null; startSession('review', ids, {kind:'review'}); break; }
+  }
+});
+async function exportData(){
+  const name = '多益650紀錄-' + dayKey(new Date()) + '.json';
+  try { const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+    if (dl) { try { await dl.save({filename:name, data:JSON.stringify(S)}); } catch (e) { if (e && e.code !== 'declined') alert('下載失敗，請稍後再試'); } return; } } catch (e) {}
+  const blob = new Blob([JSON.stringify(S)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+document.addEventListener('change', e => {
+  if (e.target.id !== 'importfile' || !e.target.files[0]) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try { const d = JSON.parse(rd.result); if (!d || typeof d.rec !== 'object') throw 0;
+      if (!confirm('要用備份檔取代目前的紀錄嗎？')) return;
+      S = Object.assign(blank(), d); save(); if (dbDoc) flush(); render(); alert('已還原紀錄');
+    } catch (err) { alert('備份檔格式不正確'); }
+  };
+  rd.readAsText(e.target.files[0]); e.target.value = '';
+});
+function sortIds(ids){
+  const rank = q => q.part === 5 ? 0 : q.part === 6 ? 1 : q.part === 7 ? 2 : 3;
+  return ids.slice().sort((a, b) => { const qa = QM[a], qb = QM[b]; return rank(qa) - rank(qb) || Q.indexOf(qa) - Q.indexOf(qb); });
+}
+document.addEventListener('input', e => {
+  if (e.target.id === 'vq') {
+    vsetup.q = e.target.value;
+    stopAll();
+    const body = $('#vbody');
+    if (body) body.innerHTML = vocabRowsHtml(vocabRows());
+  }
+});
+document.addEventListener('keydown', e => {
+  if (!sess || e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  const idx = '1234'.indexOf(k) >= 0 ? '1234'.indexOf(k) : 'abcd'.indexOf(k);
+  if (idx >= 0 && k.length === 1) { const it = sess.items[sess.i]; if (sess.mode === 'exam' || it.pick === null) { e.preventDefault(); pick(idx); } }
+  else if (k === 'enter' || k === 'arrowright') {
+    const it = sess.items[sess.i];
+    if (sess.mode === 'exam' || it.pick !== null) { if (document.activeElement && document.activeElement.tagName === 'BUTTON' && k === 'enter') return; e.preventDefault(); next(); }
+  } else if (k === 'arrowleft' && sess.mode === 'exam' && sess.i > 0) { sess.i--; render(); }
+});
+
+render();
+initStore();
+})();
+
+</script>
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
